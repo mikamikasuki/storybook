@@ -147,7 +147,6 @@ const entryForFixture = (fixtureCase: string, testDir: string): IndexEntry => {
 const runProvider = async (testDir: string, entry: IndexEntry) => {
   vi.spyOn(process, 'cwd').mockReturnValue(testDir);
   const provider = createDocgenProvider({
-    autoGenerateManifest: true,
     manifestPaths: [],
     typeProperty: DEFAULT_TYPE_PROPERTY,
   })(async () => undefined);

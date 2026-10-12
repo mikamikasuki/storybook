@@ -57,22 +57,6 @@ const entry: IndexEntry = {
 };
 
 describe('createDocgenProvider', () => {
-  it('passes through and warns once when no manifest is configured', async () => {
-    const next = vi.fn(async () => ({ id: 'downstream' }));
-    const provider = createDocgenProvider({ manifestPaths: [], typeProperty: 'parsedType' })(
-      next as never
-    );
-
-    await expect(provider({ entry })).resolves.toEqual({ id: 'downstream' });
-    await expect(provider({ entry })).resolves.toEqual({ id: 'downstream' });
-    expect(next).toHaveBeenCalledTimes(2);
-    expect(logger.warn).toHaveBeenCalledTimes(1);
-    expect(loadGenerator).not.toHaveBeenCalled();
-    expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringMatching(/No Custom Elements Manifest was configured/)
-    );
-  });
-
   it('loads manifests once and merges its payload over downstream', async () => {
     vol.fromNestedJSON({
       '/workspace/custom-elements.json': JSON.stringify({
@@ -121,7 +105,6 @@ describe('createDocgenProvider', () => {
     });
     const provider = createDocgenProvider({
       manifestPaths: ['/workspace/custom-elements.json'],
-      autoGenerateManifest: true,
       typeProperty: 'parsedType',
     })(async () => undefined);
 
@@ -132,7 +115,7 @@ describe('createDocgenProvider', () => {
     expect(sourceFind).not.toHaveBeenCalled();
   });
 
-  it('falls back to sources when no manifest declares the tag', async () => {
+  it('generates from sources when no manifest is configured', async () => {
     sourceFind.mockResolvedValue({
       declaration: {
         name: 'XCard',
@@ -148,7 +131,6 @@ describe('createDocgenProvider', () => {
     const next = vi.fn(async () => ({ id: 'downstream' }));
     const provider = createDocgenProvider({
       manifestPaths: [],
-      autoGenerateManifest: true,
       previewFilePath: '/workspace/.storybook/preview.ts',
       typeProperty: 'parsedType',
     })(next as never);
