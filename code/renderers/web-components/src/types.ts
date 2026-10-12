@@ -12,6 +12,8 @@ export type WebComponentsFrameworkOptions = {
    * Please note that the runtime `setCustomElementsManifest` path is deprecated and will be removed in next major.
    */
   customElementsManifest?: string | string[];
+  /** Generate declarations from the project's sources for tags no Custom Elements Manifest declares. */
+  autoGenerateManifest?: boolean;
   docgen?: {
     /** Manifest key that holds analyzer-resolved type text; defaults to `parsedType`. */
     typeProperty?: string;

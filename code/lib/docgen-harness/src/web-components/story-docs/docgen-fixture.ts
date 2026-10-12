@@ -13,9 +13,6 @@ export function createFixtureDocgen(testDir: string): {
   const manager = new CemManager([join(testDir, 'custom-elements.json')]);
   return {
     getDocgenPayload: (entry) => async (): Promise<WebComponentsDocgenPayload | undefined> =>
-      buildDocgenPayload(
-        { entry },
-        { cem: await manager.refresh(), typeProperty: DEFAULT_TYPE_PROPERTY }
-      ),
+      buildDocgenPayload({ entry }, { resolver: manager, typeProperty: DEFAULT_TYPE_PROPERTY }),
   };
 }

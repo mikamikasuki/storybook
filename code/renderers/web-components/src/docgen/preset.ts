@@ -1,3 +1,4 @@
+import { loadPreviewOrConfigFile } from 'storybook/internal/common';
 import type {
   DocgenProviderDescriptor,
   IndexEntry,
@@ -23,10 +24,15 @@ export const experimental_docgenProvider = async (
       'frameworkOptions'
     )) ?? {};
 
+  const autoGenerateManifest = frameworkOptions.autoGenerateManifest === true;
   const descriptor: DocgenProviderDescriptor<WebComponentsDocgenOptions> = {
     moduleSpecifier: fileURLToPath(import.meta.resolve(DOCGEN_WORKER_SPECIFIER)),
     options: {
       manifestPaths: resolveManifestPaths(options.configDir, frameworkOptions),
+      autoGenerateManifest,
+      previewFilePath: autoGenerateManifest
+        ? loadPreviewOrConfigFile({ configDir: options.configDir })
+        : undefined,
       typeProperty: frameworkOptions.docgen?.typeProperty ?? DEFAULT_TYPE_PROPERTY,
     },
   };
